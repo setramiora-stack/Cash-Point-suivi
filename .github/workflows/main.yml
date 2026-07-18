@@ -1,20 +1,41 @@
 name: Build APK
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - uses: actions/checkout@v4
 
-      - name: Build
-        run: echo "Workflow OK"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-node@v4
         with:
-          name: Caisse-Pro-APK
-          path: app/build/outputs/apk/debug/*.apk
+          node-version: 20
+
+      - run: npm install -g @capacitor/cli
+
+      - run: npm init -y
+
+      - run: npm install @capacitor/core @capacitor/android
+
+      - run: npx cap init CaissePro com.caisse.pro
+
+      - run: npx cap add android
+
+      - run: npx cap copy
+
+      - run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
