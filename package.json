@@ -1,0 +1,9 @@
+{
+  "name": "cash-point-suivi",
+  "version": "1.0.0",
+  "description": "Caisse Pro Dashboard Android App",
+  "private": true,
+  "scripts": {
+    "build": "echo build"
+  }
+}
