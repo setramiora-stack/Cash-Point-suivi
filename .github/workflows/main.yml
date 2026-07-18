@@ -1,41 +1,89 @@
-name: Build APK
+name: Build Caisse Pro APK
 
 on:
   push:
     branches:
       - main
 
+  workflow_dispatch:
+
+
 jobs:
+
   build:
 
     runs-on: ubuntu-latest
 
+
     steps:
 
-      - uses: actions/checkout@v4
+    # 1 - Maka ny code ao GitHub
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
 
-      - run: npm install -g @capacitor/cli
+    # 2 - Installer Java ilaina amin'ny Android
+    - name: Setup Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
 
-      - run: npm init -y
 
-      - run: npm install @capacitor/core @capacitor/android
+    # 3 - Installer Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
 
-      - run: npx cap init CaissePro com.caisse.pro
 
-      - run: npx cap add android
+    # 4 - Installer Capacitor
+    - name: Install Capacitor
+      run: |
+        npm install -g @capacitor/cli
 
-      - run: npx cap copy
 
-      - run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+    # 5 - Mamorona projet Node
+    - name: Init npm
+      run: |
+        npm init -y
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+    # 6 - Installer Capacitor packages
+    - name: Install Capacitor packages
+      run: |
+        npm install @capacitor/core @capacitor/android
+
+
+    # 7 - Mamorona configuration
+    - name: Create Capacitor project
+      run: |
+        npx cap init "Caisse Pro" "com.caisse.pro" --web-dir=.
+
+
+    # 8 - Manampy Android
+    - name: Add Android platform
+      run: |
+        npx cap add android
+
+
+    # 9 - Copier ny fichier web
+    - name: Copy Web files
+      run:
+        npx cap copy
+
+
+    # 10 - Build APK
+    - name: Build Debug APK
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+
+    # 11 - Maka APK ho download
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Caisse-Pro-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk
