@@ -12,6 +12,7 @@ jobs:
 
       - name: Build
         run: echo "Workflow OK"
+        
 - name: Upload APK
   uses: actions/upload-artifact@v4
   with:
