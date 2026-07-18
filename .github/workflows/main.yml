@@ -49,7 +49,13 @@ jobs:
           "webDir": "www"
         }
         EOF
-
+        
+- name: Check files
+  run: |
+    pwd
+    ls -la
+    echo "----- WWW -----"
+    ls -la www
 
     - name: Create Android project
       run: |
